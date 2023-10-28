@@ -12,31 +12,31 @@ int ok = 0;
 /**
  * Basic cell for 123 cells array containing minimum and exact number of occurrences and if the software knows exact number of occurrences
  */
-typedef struct match                                                                                                    //Cella base per vettore da 123 celle che fungerà da vettore match per ogni carattere
+typedef struct match
 {
-    int minimum;                                                                                                        //Numero minimo dei caratteri nella parola
-    int exact;                                                                                                          //Numero esatto dei caratteri nella parola
-    bool number_known;                                                                                                  //True se so quanti caratteri esatti ci sono nella parola, false altrimenti
+    int minimum;
+    int exact;
+    bool number_known;
 }match;
 
 /**
  * Binary Search Tree node
  */
-typedef struct node                                                                                                     //Node BST che contiene ogni parola inserita
+typedef struct node
 {
-    struct node *son_l;                                                                                                 //Puntatore al figlio sinistro
-    struct node *son_r;                                                                                                 //Puntatore al figlio destro
-    bool valid;                                                                                                         //True se il nodo rispetta i vincoli, false altrimenti
-    char key[];                                                                                                         //Stringa associata al nodo
+    struct node *son_l;
+    struct node *son_r;
+    bool valid;
+    char key[];
 }node;
 
 /**
  * Counter of characters for each character in the alphabet
  */
-typedef struct counter_sym                                                                                              //Cella base per vettore da 123 celle che conta il numero di / e + per ogni carattere
+typedef struct counter_sym
 {
-    int n_i;                                                                                                            //Numero di / associati al carattere
-    int c_i;                                                                                                            //Numero di + associati al carattere
+    int n_i;
+    int c_i;
     int z_i;
 }counter_sym;
 
@@ -45,7 +45,7 @@ typedef struct counter_sym                                                      
  */
 typedef struct position
 {
-    bool presente[124];                                                                                                 //Tiene conto su 123 caratteri possibili dove possono/non possono esserci, la cella 123 è true se so già che lettera è obbligatorio ci sia; evita doppi controlli
+    bool presente[124];
 }position;
 
 /**
@@ -311,13 +311,13 @@ void insert_word(int lunghezza, char buffer[])
 
     while (begin != 1)
     {
-        err_scanf = scanf("%s", buffer);                                                                          //Ricezione stringa (compresi i comandi)
+        err_scanf = scanf("%s", buffer);
         if (err_scanf == 0)
             return;
         if (buffer[0] != '+' || buffer[1] != 'n')
         {
             if (buffer[0] != '+' || buffer[1] != 'i')
-                add_node_BST(buffer, lunghezza);                                                                   //Amplia l'albero con la chiave creata
+                add_node_BST(buffer, lunghezza);
         }
         else
             begin = 1;
@@ -369,7 +369,7 @@ void filtra_parola(node *nodo, int lunghezza, int *num, bool appartiene[], match
 
     for (int i = 0; i < lunghezza; i++)
     {
-        if (learning[i] != '?')                                                                                         //So che carattere c'è in position i
+        if (learning[i] != '?')
         {
             if (nodo->key[i] != reference[i])
             {
@@ -380,7 +380,7 @@ void filtra_parola(node *nodo, int lunghezza, int *num, bool appartiene[], match
         }
         else
         {
-            if ((locazione[i].presente[(int) nodo->key[i]] == false || appartiene[(int) nodo->key[i]] == false))        //Verifica se il carattere di key in position i è compatibile con ciò che è stato appreso (vincoli 1/2/3)
+            if ((locazione[i].presente[(int) nodo->key[i]] == false || appartiene[(int) nodo->key[i]] == false))
             {
                 (*num)--;
                 nodo->valid = false;
@@ -393,13 +393,13 @@ void filtra_parola(node *nodo, int lunghezza, int *num, bool appartiene[], match
     for (int i = 0; i < counter_informazioni; i++)
     {
         accesso = informazioni_caratteri[i];
-        if (vettore_partita[accesso].number_known == true && caratteri[accesso] != vettore_partita[accesso].exact)                  //Ho un numero esatto di caratteri definito (vincolo 5)
+        if (vettore_partita[accesso].number_known == true && caratteri[accesso] != vettore_partita[accesso].exact)
         {
             (*num)--;
             nodo->valid = false;
             return;
         }
-        else if (vettore_partita[accesso].number_known == false && caratteri[accesso] < vettore_partita[accesso].minimum)           //So solo i caratteri minimi (vincolo 4)
+        else if (vettore_partita[accesso].number_known == false && caratteri[accesso] < vettore_partita[accesso].minimum)
         {
             (*num)--;
             nodo->valid = false;
@@ -458,7 +458,7 @@ void learning_algo(char key[], int lunghezza, int *num, bool appartiene[], match
 
     for (int i = 0; i < lunghezza; i++)
     {
-        temp_caratteri[(unsigned int) key[i]]++;                                                                        //Aumenta il contatore temporaneo dei caratteri
+        temp_caratteri[(unsigned int) key[i]]++;
         symbols[i] = '?';
 
         if (key[i] == reference[i])
@@ -469,20 +469,20 @@ void learning_algo(char key[], int lunghezza, int *num, bool appartiene[], match
             locazione[i].presente[123] = true;
         }
         else
-            locazione[i].presente[(unsigned int) key[i]] = false;                                                       //Setup vincolo 2
+            locazione[i].presente[(unsigned int) key[i]] = false;
 
-        counter[(unsigned int)reference[i]].n_i++;                                                                      //Occorrenze della lettera nella stringa (n_i)
+        counter[(unsigned int)reference[i]].n_i++;
         if (symbols[i] == '+')
         {
-            counter[(unsigned int) key[i]].c_i++;                                                                       //Occorrenze della lettera nella stringa in position corretta (c_i)
-            temp_char[(unsigned int) key[i]].exact++;                                                                   //Aggiorna il numero di caratteri esatti
-            temp_char[(unsigned int) key[i]].minimum++;                                                                 //Aggiorna il numero di caratteri minimi
+            counter[(unsigned int) key[i]].c_i++;
+            temp_char[(unsigned int) key[i]].exact++;
+            temp_char[(unsigned int) key[i]].minimum++;
         }
-        informazioni[num_info] = (int)key[i];                                                                           //Inserisco nel vettore informazioni l'ASCII code relativo al carattere con informazioni aggiornate
+        informazioni[num_info] = (int)key[i];
         num_info++;
     }
 
-    for (int i = 0; i < lunghezza; i++)                                                                                 //Stampa wordle
+    for (int i = 0; i < lunghezza; i++)
     {
         if (symbols[i] != '+')
             counter[(unsigned int) key[i]].z_i++;
@@ -493,7 +493,7 @@ void learning_algo(char key[], int lunghezza, int *num, bool appartiene[], match
         else if (symbols[i] != '+')
         {
             symbols[i] = '|';
-            temp_char[(unsigned int) key[i]].minimum++;                                                                 //Aggiorna il numero di caratteri minimi
+            temp_char[(unsigned int) key[i]].minimum++;
             temp_char[(unsigned int) key[i]].exact++;
         }
     }
@@ -501,7 +501,7 @@ void learning_algo(char key[], int lunghezza, int *num, bool appartiene[], match
     for (int i = 0; i < num_info; i++)
     {
         accesso = informazioni[i];
-        if (info_gia_presenti[accesso] == false)                                                                        //Aggiorno il vettore che mi dice se conosco già informazioni relative a quel carattere
+        if (info_gia_presenti[accesso] == false)
         {
             info_gia_presenti[accesso] = true;
             informazioni_caratteri[(*counter_informazioni)] = accesso;
@@ -510,17 +510,17 @@ void learning_algo(char key[], int lunghezza, int *num, bool appartiene[], match
 
         if (temp_char[accesso].minimum > vettore_partita[accesso].minimum)
         {
-            vettore_partita[accesso].minimum = temp_char[accesso].minimum;                                              //Aggiorna eventualmente il contatore minimo
+            vettore_partita[accesso].minimum = temp_char[accesso].minimum;
             modifiche = true;
         }
 
-        if (temp_char[accesso].exact > vettore_partita[accesso].exact)                                                  //Aggiorna eventualmente il contatore esatto
+        if (temp_char[accesso].exact > vettore_partita[accesso].exact)
         {
             vettore_partita[accesso].exact = temp_char[accesso].exact;
             modifiche = true;
         }
 
-        if (temp_caratteri[accesso] > vettore_partita[accesso].exact)                                                   //Setup vincolo 5
+        if (temp_caratteri[accesso] > vettore_partita[accesso].exact)
         {
             vettore_partita[accesso].number_known = true;
             modifiche = true;
@@ -535,7 +535,7 @@ void learning_algo(char key[], int lunghezza, int *num, bool appartiene[], match
 
     if (ok != lunghezza)
         printf("%.*s\n", lunghezza, symbols);
-    if (modifiche == true)                                                                                              //Se non ci sono modifiche non filtra
+    if (modifiche == true)
         filter_algo(root, lunghezza, num, appartiene, vettore_partita, reference, learning, buffer, informazioni, locazione, *counter_informazioni, informazioni_caratteri);
     modifiche = false;
 }
@@ -569,9 +569,9 @@ void inserisci_inizio(int lunghezza, int *num, bool appartiene[], match vettore_
                 (*num)++;
                 filtra_parola(temp, lunghezza, num, appartiene, vettore_partita, reference, learning, locazione, counter_informazioni, informazioni_caratteri);
 
-                if (temp->valid == true)                                                                                //Inserisci in coda lista validi
+                if (temp->valid == true)
                     insert_in_valid_list(temp);
-                else                                                                                                    //Inserisce in coda lista non validi
+                else
                 {
                     list_node *nuovo_nodo = (list_node *)malloc(sizeof(list_node));
                     nuovo_nodo->el = temp;
@@ -677,8 +677,8 @@ int main() {
     bool win = false;
     bool nuova_partita = false;
     bool end = false;
-    bool appartiene[123];                                                                                               //Per ogni carattere è true se appartiene, false altrimenti (DEFAULT: true)
-    position locazione[300];                                                                                           //Ogni cella di locazione ha 123 bool, vero se il carattere può appartenere, falso altrimenti
+    bool appartiene[123];
+    position locazione[300];
     char reference[300];
     char learning[300];
     char buffer[300];
@@ -688,7 +688,7 @@ int main() {
     err_scanf = scanf("%d", &word_length);
 
     insert_word(word_length, buffer);
-    create_list(root);                                                                                             //Crea lista a partire dal dizionario
+    create_list(root);
 
     do
     {
@@ -696,13 +696,13 @@ int main() {
         nuova_partita = false;
         end = false;
         match vettore_partita[123] = {0};
-        bool info_gia_presenti[123] = {0};                                                                              //Di default false, true se ho aggiunto la lettera nel vettore delle informazioni
-        int informazioni_caratteri[64] = {0};                                                                           //Contiene gli ASCII code delle lettere per cui si conoscono informazioni
-        int counter_informazioni = 0;                                                                                   //Tiene conto di quanti caratteri so informazioni
+        bool info_gia_presenti[123] = {0};
+        int informazioni_caratteri[64] = {0};
+        int counter_informazioni = 0;
 
-        err_scanf = scanf("%s", reference);                                                                       //Inserimento di parola di riferimento
+        err_scanf = scanf("%s", reference);
 
-        for (int i = 0; i < 64; i++)                                                                                    //Inizializzazione vettore match, vettore appartenenza, contatori per appartenenza, vettore di locazione
+        for (int i = 0; i < 64; i++)
         {
             accesso = alphabet[i];
             appartiene[accesso] = true;
@@ -725,7 +725,7 @@ int main() {
         {
             err_scanf = scanf("%s", buffer);
 
-            if (buffer[0] == '+')                                                                                       //Si sta per inserire un comando
+            if (buffer[0] == '+')
             {
                 if (buffer[1] == 'i')
                     inserisci_inizio(word_length, &num_elem_valid, appartiene, vettore_partita, reference, buffer, learning, locazione, counter_informazioni, informazioni_caratteri);
@@ -745,7 +745,7 @@ int main() {
 
                 if (found == 0)
                 {
-                    puts("not_exists");                                                                              //La stringa non esiste
+                    puts("not_exists");
                     i--;
                 }
 
@@ -762,7 +762,7 @@ int main() {
                     }
                 }
             }
-        }                                                                                                               //A meno che non sia stato diminuito la match termina
+        }
 
         if (win == false)
             puts("ko");
@@ -771,7 +771,7 @@ int main() {
         {
             err_scanf = scanf("%s", buffer);
 
-            if (err_scanf != 1)                                                                                         //Partite terminate, inizio deallocazione strutture
+            if (err_scanf != 1)
             {
                 if (word_length <= ALL_LENG)
                 {
@@ -788,9 +788,9 @@ int main() {
                 return 0;
             }
 
-            if (buffer[0] == '+' && buffer[1] == 'i')                                                                   //Se nuova_partita == true deve già iniziarne una nuova
+            if (buffer[0] == '+' && buffer[1] == 'i')
                 inserisci_inizio(word_length, &num_elem_valid, appartiene, vettore_partita, reference, buffer, learning, locazione, counter_informazioni, informazioni_caratteri);
-            if (buffer[0] == '+' && buffer[1] == 's')                                                                   //Se nuova_partita == true deve già iniziarne una nuova
+            if (buffer[0] == '+' && buffer[1] == 's')
                 stampa_filtrate(root, word_length);
             if (buffer[0] == '+' && buffer[1] == 'n')
             {
